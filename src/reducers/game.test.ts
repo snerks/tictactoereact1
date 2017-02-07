@@ -14,7 +14,7 @@ describe('Game Reducer', () => {
         expect(result).toBe(initialState);
     });
 
-    it('toggles current player symbol when supplied action is TAKE_TURN', () => {
+    it('returns supplied state when supplied action is not handled', () => {
         const currentState: GameState = {
             playerOneSymbol: PLAYER_ONE_SYMBOL,
             playerTwoSymbol: PLAYER_TWO_SYMBOL,
@@ -27,9 +27,29 @@ describe('Game Reducer', () => {
             winner: null,
         };
 
-        const result = game(currentState, { type: 'TAKE_TURN' });
+        const result = game(currentState, { type: 'NOT_HANDLED' });
 
-        expect(result.currentTurnSymbol).toBe(PLAYER_TWO_SYMBOL);
+        expect(result).toBe(currentState);
+    });
+
+    describe('TAKE_TURN Action', () => {
+        it('toggles current player symbol when supplied action is TAKE_TURN', () => {
+            const currentState: GameState = {
+                playerOneSymbol: PLAYER_ONE_SYMBOL,
+                playerTwoSymbol: PLAYER_TWO_SYMBOL,
+                currentTurnSymbol: PLAYER_ONE_SYMBOL,
+                board: [
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                ],
+                winner: null,
+            };
+
+            const result = game(currentState, { type: 'TAKE_TURN' });
+
+            expect(result.currentTurnSymbol).toBe(PLAYER_TWO_SYMBOL);
+        });
     });
 
 });
