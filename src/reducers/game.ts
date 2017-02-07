@@ -10,12 +10,12 @@ export interface GameState {
     winner: string | null;
 }
 
-const BLANK_SYMBOL = '?';
-const PLAYER_ONE_SYMBOL = 'Y';
-const PLAYER_TWO_SYMBOL = 'N';
-// const DRAW_SYMBOL = 'Nobody';
+export const BLANK_SYMBOL = '?';
+export const PLAYER_ONE_SYMBOL = 'Y';
+export const PLAYER_TWO_SYMBOL = 'N';
+// export const DRAW_SYMBOL = 'Nobody';
 
-const initialState: GameState = {
+export const initialState: GameState = {
     playerOneSymbol: PLAYER_ONE_SYMBOL,
     playerTwoSymbol: PLAYER_TWO_SYMBOL,
     currentTurnSymbol: PLAYER_ONE_SYMBOL,
@@ -31,5 +31,18 @@ export default function game(
     state: GameState = initialState,
     action: Action = defaultAction): GameState {
 
-    return state;
+    switch (action.type) {
+        case 'TAKE_TURN':
+            const newCurrentTurnSymbol = (
+                state.currentTurnSymbol === state.playerOneSymbol ?
+                    state.playerTwoSymbol :
+                    state.playerOneSymbol
+            );
+
+            const newState = { ...state, ...{ currentTurnSymbol: newCurrentTurnSymbol } };
+
+            return newState;
+        default:
+            return state;
+    }
 }
