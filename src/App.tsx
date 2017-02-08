@@ -1,22 +1,64 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+
 import './App.css';
 
-const logo = require('./logo.svg');
+import { reset, takeTurn } from './actions/gameActions';
+import { GameState } from './reducers/game';
 
-class App extends React.Component<null, null> {
+const GameBoard: React.SFC<{ board: string[], handleClick: (index: number) => void }> = ({ board, handleClick }) => (
+  <div className="board">
+    {board.map((cell, index) => {
+      return <div key={index} onClick={() => handleClick(index)} className="square">{cell}</div>;
+    })}
+  </div>
+);
+
+const GameFooter: React.SFC<{ winner: string | null, resetFunction: Function }> = ({ winner, resetFunction}) => (
+  <div>
+    <h1>{'The winner is ' + winner}</h1>
+    <div>
+      <button onClick={() => resetFunction()}>Reset</button>
+    </div>
+  </div>
+);
+
+interface AppProps extends GameState {
+  dispatch: Function;
+}
+
+class App extends React.Component<AppProps, GameState> {
+  constructor(props: AppProps) {
+    super(props);
+  }
+
+  componentWillMount() {
+    this.handleReset();
+  }
+
+  handleClick(index: number) {
+    this.props.dispatch(takeTurn(index));
+  }
+
+  handleReset() {
+    this.props.dispatch(reset());
+  }
+
   render() {
+    const {board, winner} = this.props;
+
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
+      <div className="app-container">
+        <GameBoard board={board} handleClick={(index: number) => this.handleClick(index)} />
+
+        {winner ? <GameFooter winner={winner} resetFunction={() => this.handleReset()} /> : null}
       </div>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state: any) {
+  return state.game;
+}
+
+export default connect(mapStateToProps)(App as any);

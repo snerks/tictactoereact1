@@ -9,11 +9,11 @@ import {
     TakeTurnAction
 } from './game';
 
-describe('Game Reducer', () => {
+describe('Game Reducer Tests', () => {
 
     it('returns initial state when supplied state is undefined', () => {
         const result = game(undefined);
-        expect(result).toBe(initialState);
+        expect(result).toEqual(initialState);
     });
 
     it('returns supplied state when supplied action is not handled', () => {
@@ -31,11 +31,11 @@ describe('Game Reducer', () => {
 
         const result = game(currentState, { type: 'NOT_HANDLED' });
 
-        expect(result).toBe(currentState);
+        expect(result).toEqual(currentState);
     });
 
     describe('TAKE_TURN Action', () => {
-        it('toggles current player symbol', () => {
+        it('when selected cell is blank toggles current player symbol', () => {
             const currentState: GameState = {
                 playerOneSymbol: PLAYER_ONE_SYMBOL,
                 playerTwoSymbol: PLAYER_TWO_SYMBOL,
@@ -56,6 +56,54 @@ describe('Game Reducer', () => {
             const result = game(currentState, takeTurnAction);
 
             expect(result.currentTurnSymbol).toBe(PLAYER_TWO_SYMBOL);
+        });
+
+        it('when selected cell is not blank does not toggle current player symbol', () => {
+            const currentState: GameState = {
+                playerOneSymbol: PLAYER_ONE_SYMBOL,
+                playerTwoSymbol: PLAYER_TWO_SYMBOL,
+                currentTurnSymbol: PLAYER_ONE_SYMBOL,
+                board: [
+                    PLAYER_ONE_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                ],
+                winner: null,
+            };
+
+            const takeTurnAction: TakeTurnAction = {
+                type: 'TAKE_TURN',
+                payload: { index: 0 }
+            };
+
+            const result = game(currentState, takeTurnAction);
+
+            expect(result.currentTurnSymbol).toBe(PLAYER_ONE_SYMBOL);
+        });
+
+        it('when winner is not null does not change current cell symbol', () => {
+            const currentState: GameState = {
+                playerOneSymbol: PLAYER_ONE_SYMBOL,
+                playerTwoSymbol: PLAYER_TWO_SYMBOL,
+                currentTurnSymbol: PLAYER_ONE_SYMBOL,
+                board: [
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                    PLAYER_ONE_SYMBOL, PLAYER_ONE_SYMBOL, PLAYER_ONE_SYMBOL,
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                ],
+                winner: PLAYER_ONE_SYMBOL,
+            };
+
+            const expectedIndex = 0;
+
+            const takeTurnAction: TakeTurnAction = {
+                type: 'TAKE_TURN',
+                payload: { index: expectedIndex }
+            };
+
+            const result = game(currentState, takeTurnAction);
+
+            expect(result.board[expectedIndex]).toBe(BLANK_SYMBOL);
         });
 
         it('when selected board cell is blank sets correct board cell with current player symbol', () => {
@@ -159,6 +207,42 @@ describe('Game Reducer', () => {
             const result = game(currentState, takeTurnAction);
 
             expect(result.winner).toBe(expectedCurrentTurnSymbol);
+        });
+    });
+
+    describe('RESET Action', () => {
+        it('resets state to initial state', () => {
+            const initialState: GameState = {
+                playerOneSymbol: PLAYER_ONE_SYMBOL,
+                playerTwoSymbol: PLAYER_TWO_SYMBOL,
+                currentTurnSymbol: PLAYER_ONE_SYMBOL,
+                board: [
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                ],
+                winner: null,
+            };
+
+            const currentState: GameState = {
+                playerOneSymbol: PLAYER_ONE_SYMBOL,
+                playerTwoSymbol: PLAYER_TWO_SYMBOL,
+                currentTurnSymbol: PLAYER_ONE_SYMBOL,
+                board: [
+                    PLAYER_ONE_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                    BLANK_SYMBOL, BLANK_SYMBOL, BLANK_SYMBOL,
+                ],
+                winner: null,
+            };
+
+            const action: TakeTurnAction = {
+                type: 'RESET'
+            };
+
+            const result = game(currentState, action);
+
+            expect(result).toEqual(initialState);
         });
     });
 

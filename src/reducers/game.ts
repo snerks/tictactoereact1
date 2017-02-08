@@ -84,22 +84,31 @@ export default function game(
     action: Action = defaultAction): GameState {
 
     switch (action.type) {
+        case 'RESET':
+            return initialState;
+
         case 'TAKE_TURN':
-            const newState = { ...state };
+
+            if (state.winner) {
+                return state;
+            }
+
+            const newBoardState: string[] = state.board.slice(0);
+            const newState: GameState = { ...state, board: newBoardState };
 
             const index = ((action as TakeTurnAction).payload) !.index;
 
             if (newState.board[index] === BLANK_SYMBOL) {
                 newState.board[index] = state.currentTurnSymbol;
+
+                newState.currentTurnSymbol = (
+                    state.currentTurnSymbol === state.playerOneSymbol ?
+                        state.playerTwoSymbol :
+                        state.playerOneSymbol
+                );
             }
 
             newState.winner = checkForWinner(newState.board, state.currentTurnSymbol);
-
-            newState.currentTurnSymbol = (
-                state.currentTurnSymbol === state.playerOneSymbol ?
-                    state.playerTwoSymbol :
-                    state.playerOneSymbol
-            );
 
             return newState;
         default:
