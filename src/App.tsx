@@ -51,7 +51,7 @@ class App extends React.Component<AppProps, GameState> {
       <div className="app-container">
         <GameBoard board={board} handleClick={(index: number) => this.handleClick(index)} />
 
-        {winner ? <GameFooter winner={winner} resetFunction={() => this.handleReset()} /> : null}
+        {winner && <GameFooter winner={winner} resetFunction={() => this.handleReset()} />}
       </div>
     );
   }

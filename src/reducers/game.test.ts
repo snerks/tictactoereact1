@@ -9,7 +9,7 @@ import {
     TakeTurnAction
 } from './game';
 
-describe('Game Reducer Tests', () => {
+describe('Game Reducer', () => {
 
     it('returns initial state when supplied state is undefined', () => {
         const result = game(undefined);
