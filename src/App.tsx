@@ -57,8 +57,12 @@ class App extends React.Component<AppProps, GameState> {
   }
 }
 
-function mapStateToProps(state: any) {
+interface RootState {
+  game: GameState;
+}
+
+function mapStateToProps(state: RootState) {
   return state.game;
 }
 
-export default connect(mapStateToProps)(App as any);
+export default connect(mapStateToProps)(App);
