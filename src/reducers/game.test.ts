@@ -1,7 +1,7 @@
 import game from './game';
 import {
     GameState,
-    initialState,
+    initialGameState,
     BLANK_SYMBOL,
     PLAYER_ONE_SYMBOL,
     PLAYER_TWO_SYMBOL,
@@ -9,11 +9,13 @@ import {
     TakeTurnAction
 } from './game';
 
+import { TakeTurnActionTypeName, ResetActionTypeName } from '../actions/gameActions';
+
 describe('Game Reducer', () => {
 
     it('returns initial state when supplied state is undefined', () => {
         const result = game(undefined);
-        expect(result).toEqual(initialState);
+        expect(result).toEqual(initialGameState);
     });
 
     it('returns supplied state when supplied action is not handled', () => {
@@ -49,7 +51,7 @@ describe('Game Reducer', () => {
             };
 
             const takeTurnAction: TakeTurnAction = {
-                type: 'TAKE_TURN',
+                type: TakeTurnActionTypeName,
                 payload: { index: 0 }
             };
 
@@ -72,7 +74,7 @@ describe('Game Reducer', () => {
             };
 
             const takeTurnAction: TakeTurnAction = {
-                type: 'TAKE_TURN',
+                type: TakeTurnActionTypeName,
                 payload: { index: 0 }
             };
 
@@ -97,7 +99,7 @@ describe('Game Reducer', () => {
             const expectedIndex = 0;
 
             const takeTurnAction: TakeTurnAction = {
-                type: 'TAKE_TURN',
+                type: TakeTurnActionTypeName,
                 payload: { index: expectedIndex }
             };
 
@@ -124,7 +126,7 @@ describe('Game Reducer', () => {
             const expectedIndex = 0;
 
             const takeTurnAction: TakeTurnAction = {
-                type: 'TAKE_TURN',
+                type: TakeTurnActionTypeName,
                 payload: { index: expectedIndex }
             };
 
@@ -152,7 +154,7 @@ describe('Game Reducer', () => {
             const expectedIndex = 0;
 
             const takeTurnAction: TakeTurnAction = {
-                type: 'TAKE_TURN',
+                type: TakeTurnActionTypeName,
                 payload: { index: expectedIndex }
             };
 
@@ -175,7 +177,7 @@ describe('Game Reducer', () => {
             };
 
             const takeTurnAction: TakeTurnAction = {
-                type: 'TAKE_TURN',
+                type: TakeTurnActionTypeName,
                 payload: { index: 0 }
             };
 
@@ -200,7 +202,7 @@ describe('Game Reducer', () => {
             };
 
             const takeTurnAction: TakeTurnAction = {
-                type: 'TAKE_TURN',
+                type: TakeTurnActionTypeName,
                 payload: { index: 0 }
             };
 
@@ -237,7 +239,7 @@ describe('Game Reducer', () => {
             };
 
             const action: TakeTurnAction = {
-                type: 'RESET'
+                type: ResetActionTypeName
             };
 
             const result = game(currentState, action);

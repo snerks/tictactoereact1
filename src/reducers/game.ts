@@ -1,4 +1,5 @@
 import { Action } from 'redux';
+import { TakeTurnActionTypeName, ResetActionTypeName } from '../actions/gameActions';
 
 interface ReduxAction<T> extends Action {
     payload?: T;
@@ -13,11 +14,11 @@ export interface GameState {
 }
 
 export const BLANK_SYMBOL = '?';
-export const PLAYER_ONE_SYMBOL = 'Y';
-export const PLAYER_TWO_SYMBOL = 'N';
+export const PLAYER_ONE_SYMBOL = 'O';
+export const PLAYER_TWO_SYMBOL = 'X';
 export const DRAW_SYMBOL = 'Nobody';
 
-export const initialState: GameState = {
+export const initialGameState: GameState = {
     playerOneSymbol: PLAYER_ONE_SYMBOL,
     playerTwoSymbol: PLAYER_TWO_SYMBOL,
     currentTurnSymbol: PLAYER_ONE_SYMBOL,
@@ -33,17 +34,11 @@ interface TakeTurnActionPayload {
     index: number;
 }
 
-export interface TakeTurnAction extends ReduxAction<TakeTurnActionPayload> {
-
-}
-
-interface OtherAction extends ReduxAction<{}> {
-
-}
+export interface TakeTurnAction extends ReduxAction<TakeTurnActionPayload> { }
+export interface ResetAction extends ReduxAction<{}> { };
+interface OtherAction extends ReduxAction<{}> { }
 
 const defaultAction: OtherAction = { type: '' };
-
-// type GameAction = TakeTurnAction | OtherAction;
 
 const winningCombosIndices = [
     [0, 1, 2],
@@ -79,15 +74,17 @@ function checkForWinner(board: string[], currentTurnSymbol: string): string | nu
     return blankSymbolCells.length === 0 ? DRAW_SYMBOL : null;
 }
 
+type GameAction = TakeTurnAction | ResetAction | OtherAction;
+
 export default function game(
-    state: GameState = initialState,
-    action: Action = defaultAction): GameState {
+    state: GameState = initialGameState,
+    action: GameAction = defaultAction): GameState {
 
     switch (action.type) {
-        case 'RESET':
-            return initialState;
+        case ResetActionTypeName:
+            return initialGameState;
 
-        case 'TAKE_TURN':
+        case TakeTurnActionTypeName:
 
             if (state.winner) {
                 return state;
